@@ -44,20 +44,16 @@ class RedmineClientServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        $app = $this->app;
-        
-        // create image
-        $app['redmine'] = $app->share(function ($app) {
-	        
-	        $configs = $app['config']->get('redmine');
-	        
-	        if(!empty($configs['key'])) {
-		    	return new \Redmine\Client($configs['url'], $configs['key']);    
-	        } else {
-		        return new \Redmine\Client($configs['url'], $configs['username'], $configs['password']);
-	        }
-	        
-        });
+	    // create image
+	    $this->app->singleton('redmine', function ($app) {
+		$config = $app->make('config')->get('redmine');
+
+		if (!empty($config['key'])) {
+		    return new \Redmine\Client($config['url'], $config['key']);
+		}
+
+		return new \Redmine\Client($config['url'], $config['username'], $config['password']);
+	    });
 	}
 
 }
